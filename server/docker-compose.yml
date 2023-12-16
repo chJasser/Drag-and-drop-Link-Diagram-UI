@@ -1,0 +1,68 @@
+services:
+  nest-backend:
+    container_name: nest-app
+    image: nest-api
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 5000:5000
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PG_HOST=${DATABASE_HOST}
+      - PG_USER=${DATABASE_USER}
+      - PG_PASSWORD=${DATABASE_PASSWORD}
+      - DB_SCHEMA=${DATABASE_SCHEMA}
+      - PG_DB=${DATABASE_NAME}
+      - PG_PORT=${DATABASE_PORT}
+      - DATABASE_SYNCHRONIZE=${DATABASE_SYNCHRONIZE}
+    env_file:
+      - .env
+    networks:
+      - backend_network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres-db
+    image: postgres
+    ports:
+      - 5432:5430
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    networks:
+      - backend_network
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    networks:
+      - backend_network
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+
+networks:
+  backend_network:
+    driver: bridge
+
+volumes:
+  postgres_data: {}
