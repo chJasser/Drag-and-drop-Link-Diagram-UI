@@ -3,8 +3,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PageListView from "./Presentation/Page/PageList/PageListView";
 import SideBarView from "./Presentation/SideBar/SideBarView";
-import { CssBaseline } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import TopBar from "./Presentation/TopBar/TopBar";
+
+
 
 function App() {
   return (
@@ -12,7 +14,9 @@ function App() {
       <CssBaseline />
       <TopBar />
       <SideBarView />
-      <PageListView />
+      <Box component="main" ml={8} mt={8}>
+        <PageListView />
+      </Box>
       <ToastContainer />
     </div>
   );
