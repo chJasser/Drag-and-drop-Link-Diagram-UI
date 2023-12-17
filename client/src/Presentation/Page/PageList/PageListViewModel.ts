@@ -74,8 +74,10 @@ export default function PageListViewModel() {
   }
 
   function onChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
+  
     e.preventDefault();
-    // setPage(e.target.value);
+    const { name, value } = e.target;
+    setPage((prev) => ({ ...prev, [name]: value }));
   }
 
   return {
