@@ -5,7 +5,7 @@ import PageListView from "./Presentation/Page/PageList/PageListView";
 import SideBarView from "./Presentation/SideBar/SideBarView";
 import { Box, CssBaseline } from "@mui/material";
 import TopBar from "./Presentation/TopBar/TopBar";
-import DnDFlow from "./Presentation/Page/Dndflow";
+
 
 function App() {
   return (
@@ -14,8 +14,7 @@ function App() {
       <TopBar />
       <SideBarView />
       <Box className="dndflow-wrapper" ml={8} mt={8}>
-        {/* <PageListView /> */}
-        <DnDFlow />
+        <PageListView />
       </Box>
       <ToastContainer />
     </div>

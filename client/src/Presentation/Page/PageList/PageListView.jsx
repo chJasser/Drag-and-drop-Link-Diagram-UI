@@ -9,12 +9,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 const initialNodes = [
-    {
-        id: '1',
-        type: 'input',
-        data: { label: 'input node' },
-        position: { x: 250, y: 5 },
-    },
+
 ];
 
 let id = 0;
