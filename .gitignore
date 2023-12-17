@@ -4,4 +4,4 @@ server/dist
 server/coverage
 server/coverage-e2e
 server/test/coverage
-server/uploads/
+server/uploads
