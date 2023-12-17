@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
       context: .
     ports:
-      - 5000:5000
+      - 5000:3500
     environment:
       - NODE_ENV=${NODE_ENV}
       - PG_HOST=${DATABASE_HOST}
@@ -16,13 +16,14 @@ services:
       - PG_DB=${DATABASE_NAME}
       - PG_PORT=${DATABASE_PORT}
       - DATABASE_SYNCHRONIZE=${DATABASE_SYNCHRONIZE}
+      - PORT=${PORT}
     env_file:
       - .env
     networks:
       - backend_network
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - /usr/src/app/node_modules 
     restart: unless-stopped
     depends_on:
       - postgres
@@ -31,7 +32,7 @@ services:
     container_name: postgres-db
     image: postgres
     ports:
-      - 5432:5430
+      - 5432:5432
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}

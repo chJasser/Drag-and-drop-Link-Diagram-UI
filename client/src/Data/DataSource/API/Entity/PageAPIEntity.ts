@@ -1,5 +1,5 @@
 export interface PageAPIEntity {
-  id: string;
+  id?: string;
   title: string;
   icon: string;
   color: string;

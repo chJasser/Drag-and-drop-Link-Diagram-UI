@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, Inject, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UseCaseProxy } from '../../usecases-proxy/usecases-proxy';
 import { UsecasesProxyModule } from '../../usecases-proxy/usecases-proxy.module';
@@ -12,6 +25,7 @@ import { getPageUseCases } from 'src/usecases/page/getPage.usecases';
 import { deletePageUseCases } from 'src/usecases/page/deletePage.usecases';
 import { addPageUseCases } from 'src/usecases/page/addPage.usecases';
 import { AddPageDto, UpdatePageDto } from './page.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('page')
 @ApiTags('page')
@@ -61,10 +75,14 @@ export class PageController {
   }
 
   @Post('page')
+  @UseInterceptors(FileInterceptor('icon'))
   @ApiResponseType(PagePresenter, true)
-  async addPage(@Body() addPageDto: AddPageDto) {
-    const { title, icon, color, form, link } = addPageDto;
-    const pageCreated = await this.addPageUsecaseProxy.getInstance().execute(title, icon, color, form, link);
+  async addPage(@Body() addPageDto: AddPageDto, @UploadedFile() icon: Express.Multer.File) {
+    if (!icon) {
+      throw new BadRequestException('Icon is required.');
+    }
+    const { title, color, form, link } = addPageDto;
+    const pageCreated = await this.addPageUsecaseProxy.getInstance().execute(title, icon.filename, color, form, link);
     return new PagePresenter(pageCreated);
   }
 }

@@ -2,18 +2,18 @@ import * as React from "react";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
-
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
+
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import AddIcon from "@mui/icons-material/Add";
 import ModalComponent from "../Modal/Modal";
+import PageForm from "../Page/PageForm/PageForm";
+import useSideBarModal from "./SideBarModal";
+import PageItem from "../Page/PageItem/PageItem";
+import useViewModel from "../Page/PageViewModel";
+import { Tooltip } from "@mui/material";
 
 const closedMixin = (theme: Theme): CSSObject => ({
   transition: theme.transitions.create("width", {
@@ -34,67 +34,43 @@ const Drawer = styled(MuiDrawer)(({ theme }) => ({
   ...closedMixin(theme),
   "& .MuiDrawer-paper": closedMixin(theme),
 }));
-interface ListItemProps {
-  text: string;
-  index: number;
-  icon: React.ReactElement;
-}
-
-const generateListItem = ({ text, index, icon }: ListItemProps) => (
-  <ListItem key={text} disablePadding sx={{ display: "block" }}>
-    <ListItemButton
-      sx={{
-        minHeight: 48,
-        justifyContent: "center",
-        px: 2.5,
-      }}
-    >
-      <ListItemIcon
-        sx={{
-          minWidth: 0,
-          mr: "auto",
-          justifyContent: "center",
-        }}
-      >
-        {icon}
-      </ListItemIcon>
-      <ListItemText primary={text} sx={{ opacity: 0 }} />
-    </ListItemButton>
-  </ListItem>
-);
 
 export default function SideBarView() {
-  const [openModal, setOpenModal] = React.useState(false);
+  const { handleOpenModal, openModal, handleCloseModal } = useSideBarModal();
+  const { pages, getPages } = useViewModel();
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
+  React.useEffect(() => {
+    getPages();
+  }, []);
 
-  const listItems: React.ReactNode[] = ["All mail", "Trash", "Spam"].map(
-    (text, index) =>
-      generateListItem({
-        text,
-        index,
-        icon: index % 2 === 0 ? <InboxIcon /> : <MailIcon />,
-      })
-  );
-  const addItem = generateListItem({
-    text: "Add",
-    index: -1,
-    icon: <AddIcon onClick={handleOpenModal} />,
-  });
-  listItems.push(addItem);
-
+  React.useEffect(() => {
+    console.log("pages in SideBarView:", pages);
+  }, [pages]);
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer variant="permanent" open={false}>
-        <Divider />
-        <List> {listItems}</List>
-
-        <ModalComponent open={openModal} handleClose={handleCloseModal} />
+        <Box mt={7}>
+          <Divider />
+          <List>
+            {pages.map((page, index) => (
+              <PageItem
+                key={page.title}
+                text={page.title}
+                index={index}
+                icon={page.icon}
+              />
+            ))}
+          </List>
+          <Tooltip sx={{ cursor: "pointer" }} title="Create a new page">
+            <AddIcon onClick={handleOpenModal} />
+          </Tooltip>
+        </Box>
+        <ModalComponent
+          title="Create a new page"
+          contnent={PageForm}
+          open={openModal}
+          handleClose={handleCloseModal}
+        />
       </Drawer>
     </Box>
   );

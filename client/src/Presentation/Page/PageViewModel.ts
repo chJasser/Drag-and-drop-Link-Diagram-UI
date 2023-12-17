@@ -1,22 +1,14 @@
 import { useState } from "react";
 
 import { toast } from "react-toastify";
-import { Page } from "../../../Domain/Model/Page";
-import PageAPIDataSourceImpl from "../../../Data/DataSource/API/PageAPIDataSource";
-import { PageRepositoryImpl } from "../../../Data/Repository/PageRepositoryImpl";
-import { GetPages } from "../../../Domain/UseCase/Page/GetPages";
-import { CreatePage } from "../../../Domain/UseCase/Page/CreatePage";
-import { RemovePage } from "../../../Domain/UseCase/Page/RemovePage";
+import { Page } from "../../Domain/Model/Page";
+import PageAPIDataSourceImpl from "../../Data/DataSource/API/PageAPIDataSource";
+import { PageRepositoryImpl } from "../../Data/Repository/PageRepositoryImpl";
+import { GetPages } from "../../Domain/UseCase/Page/GetPages";
+import { CreatePage } from "../../Domain/UseCase/Page/CreatePage";
+import { RemovePage } from "../../Domain/UseCase/Page/RemovePage";
 
-interface CreatePageI {
-  title: string;
-  color: string;
-  link: string;
-  form: string;
-  icon: string;
-}
-
-const initialPageState: CreatePageI = {
+const initialPageState: Page = {
   title: "",
   color: "",
   link: "",
@@ -27,7 +19,7 @@ const initialPageState: CreatePageI = {
 export default function PageListViewModel() {
   const [pages, setPages] = useState<Page[]>([]);
 
-  const [page, setPage] = useState<CreatePageI>(initialPageState);
+  const [page, setPage] = useState<Page>(initialPageState);
   const pagesDataSourceImpl = new PageAPIDataSourceImpl();
   const PagesRepositoryImpl = new PageRepositoryImpl(pagesDataSourceImpl);
 
@@ -40,19 +32,15 @@ export default function PageListViewModel() {
   }
 
   async function getPages() {
+    console.log("getPages");
     setPages(await getPagesUseCase.invoke());
   }
-
-  async function createPage() {
+  async function createPage(page: Page) {
+    console.log("createPage");
     try {
-      const createdPage = await createPagesUseCase.invoke(
-        page.title,
-        page.icon,
-        page.color,
-        page.form,
-        page.link
-      );
-      setPages((prev) => [...prev, createdPage]);
+      const createdPage = await createPagesUseCase.invoke(page);
+      //setPages((prev) => [...prev, createdPage]);
+      getPages();
       _resetValue();
     } catch (e) {
       _resetValue();
@@ -62,7 +50,8 @@ export default function PageListViewModel() {
     }
   }
 
-  async function removePage(id: string) {
+  console.log("pages", pages);
+  async function removePage(id?: string) {
     if (id) {
       const isRemoved = await removePagesUseCase.invoke(id);
       if (isRemoved) {
@@ -74,7 +63,6 @@ export default function PageListViewModel() {
   }
 
   function onChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
-  
     e.preventDefault();
     const { name, value } = e.target;
     setPage((prev) => ({ ...prev, [name]: value }));

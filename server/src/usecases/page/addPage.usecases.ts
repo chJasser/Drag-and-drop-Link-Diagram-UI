@@ -14,7 +14,6 @@ export class addPageUseCases {
     page.link = link;
     page.form = form;
     const result = await this.pageRepository.insert(page);
-
     this.logger.log('addpageUseCases execute', 'New page have been inserted');
     return result;
   }

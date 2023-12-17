@@ -37,10 +37,10 @@ export class AddPageDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
-  readonly icon: string;
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
-  @IsString()
+  // readonly icon: string;
+  // @ApiProperty({ required: true })
+  // @IsNotEmpty()
+  // @IsString()
   readonly color: string;
   @ApiProperty({ required: true })
   @IsNotEmpty()

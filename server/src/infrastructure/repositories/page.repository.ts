@@ -23,8 +23,8 @@ export class DatabasePageRepository implements PageRepository {
   // }
   async insert(page: PageM): Promise<PageM> {
     const pageEntity = this.pageEntity(page);
-    const result = await this.pageEntityRepository.insert(pageEntity);
-    return this.pageEntity(result.generatedMaps[0] as Page);
+    const result = await this.pageEntityRepository.save(pageEntity);
+    return this.pageEntity(result);
   }
   async findAll(): Promise<PageM[]> {
     const pagesEntity = await this.pageEntityRepository.find();
@@ -38,11 +38,8 @@ export class DatabasePageRepository implements PageRepository {
     await this.pageEntityRepository.delete({ id: id });
   }
 
-
-
   private pageEntity(page: PageM): Page {
     const pageEntity: Page = new Page();
-
     pageEntity.id = page.id;
     pageEntity.title = page.title;
     pageEntity.icon = page.icon;

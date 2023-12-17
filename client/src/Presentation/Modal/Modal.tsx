@@ -1,42 +1,21 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
 interface ModalComponentProps {
   handleClose: () => void;
   open: boolean;
+  title: string;
+  contnent: React.ComponentType<any>;
 }
-
 const ModalComponent: React.FC<ModalComponentProps> = (props) => {
-  const { handleClose, open } = props;
-
+  const { handleClose, open, contnent: Contnent, title } = props;
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Subscribe</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          To subscribe to this website, please enter your email address here. We
-          will send updates occasionally.
-        </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Email Address"
-          type="email"
-          fullWidth
-          variant="standard"
-        />
+        <Contnent />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleClose}>Subscribe</Button>
-      </DialogActions>
     </Dialog>
   );
 };

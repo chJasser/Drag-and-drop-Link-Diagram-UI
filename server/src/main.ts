@@ -30,7 +30,6 @@ async function bootstrap() {
   // swagger config
   if (env !== 'production') {
     const config = new DocumentBuilder()
-      .addBearerAuth()
       .setTitle('Clean Architecture Nestjs')
       .setDescription('Example with page list')
       .setVersion('1.0')
@@ -41,7 +40,8 @@ async function bootstrap() {
     });
     SwaggerModule.setup('api', app, document);
   }
-
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  app.enableCors();
+  await app.listen(port);
 }
 bootstrap();

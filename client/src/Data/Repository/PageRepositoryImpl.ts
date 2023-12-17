@@ -2,7 +2,6 @@ import { Page } from "../../Domain/Model/Page";
 import { PageRepository } from "../../Domain/Repository/PageRepository";
 import PageDataSource from "../DataSource/PageDataSource";
 
-
 export class PageRepositoryImpl implements PageRepository {
   dataSource: PageDataSource;
 
@@ -10,14 +9,8 @@ export class PageRepositoryImpl implements PageRepository {
     this.dataSource = _datasource;
   }
 
-  async createPage(
-    title: string,
-    icon: string,
-    color: string,
-    form: string,
-    link: string
-  ) {
-    return this.dataSource.createPage(title, icon, color, form, link);
+  async createPage(page: Page) {
+    return this.dataSource.createPage(page);
   }
 
   async getPages() {

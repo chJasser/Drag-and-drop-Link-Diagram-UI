@@ -2,13 +2,7 @@ import { Page } from "../../Model/Page";
 import { PageRepository } from "../../Repository/PageRepository";
 
 export interface CreatePagesUseCase {
-  invoke: (
-    title: string,
-    icon: string,
-    color: string,
-    form: string,
-    link: string
-  ) => Promise<Page>;
+  invoke: (page: Page) => Promise<Page>;
 }
 
 export class CreatePage implements CreatePagesUseCase {
@@ -17,14 +11,8 @@ export class CreatePage implements CreatePagesUseCase {
     this.pageRepo = _pageRepo;
   }
 
-  async invoke(
-    title: string,
-    icon: string,
-    color: string,
-    form: string,
-    link: string
-  ) {
-    const created = this.pageRepo.createPage(title, icon, color, form, link);
+  async invoke(page: Page) {
+    const created = this.pageRepo.createPage(page);
     return created;
   }
 }
