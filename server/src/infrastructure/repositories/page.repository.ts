@@ -13,16 +13,18 @@ export class DatabasePageRepository implements PageRepository {
     private readonly pageEntityRepository: Repository<Page>,
   ) {}
 
-  // async updateContent(id: number, isDone: boolean): Promise<void> {
-  //   await this.pageEntityRepository.update(
-  //     {
-  //       id: id,
-  //     },
-  //     { is_done: isDone },
-  //   );
-  // }
+  async updateContent(page: PageM): Promise<PageM> {
+    await this.pageEntityRepository.update(
+      {
+        id: page.id,
+      },
+      { ...page },
+    );
+    return this.findById(page.id);
+  }
   async insert(page: PageM): Promise<PageM> {
     const pageEntity = this.pageEntity(page);
+    console.log('page repo', page);
     const result = await this.pageEntityRepository.save(pageEntity);
     return this.pageEntity(result);
   }
@@ -37,6 +39,14 @@ export class DatabasePageRepository implements PageRepository {
   async deleteById(id: number): Promise<void> {
     await this.pageEntityRepository.delete({ id: id });
   }
+  async updateLink(id: number, link: string): Promise<void> {
+    await this.pageEntityRepository.update(
+      {
+        id: id,
+      },
+      { link },
+    );
+  }
 
   private pageEntity(page: PageM): Page {
     const pageEntity: Page = new Page();
@@ -46,6 +56,7 @@ export class DatabasePageRepository implements PageRepository {
     pageEntity.color = page.color;
     pageEntity.form = page.form;
     pageEntity.link = page.link;
+    pageEntity.description = page.description;
     return pageEntity;
   }
 }

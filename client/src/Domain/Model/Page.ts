@@ -5,5 +5,5 @@ export interface Page {
   color: string;
   form: string;
   link: string;
+  description: string;
 }
-

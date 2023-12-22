@@ -5,4 +5,5 @@ export class PageM {
   color: string;
   form: string;
   link: string;
+  description:string;
 }

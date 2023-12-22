@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 import { Page } from "../../Domain/Model/Page";
@@ -9,6 +9,7 @@ import { CreatePage } from "../../Domain/UseCase/Page/CreatePage";
 import { RemovePage } from "../../Domain/UseCase/Page/RemovePage";
 
 const initialPageState: Page = {
+  description: "",
   title: "",
   color: "",
   link: "",
@@ -16,41 +17,32 @@ const initialPageState: Page = {
   icon: "",
 };
 
-export default function PageListViewModel() {
+export default function usePageModel() {
   const [pages, setPages] = useState<Page[]>([]);
 
   const [page, setPage] = useState<Page>(initialPageState);
   const pagesDataSourceImpl = new PageAPIDataSourceImpl();
   const PagesRepositoryImpl = new PageRepositoryImpl(pagesDataSourceImpl);
-
   const getPagesUseCase = new GetPages(PagesRepositoryImpl);
   const createPagesUseCase = new CreatePage(PagesRepositoryImpl);
+
   const removePagesUseCase = new RemovePage(PagesRepositoryImpl);
-
-  function _resetValue() {
-    setPage(initialPageState);
-  }
-
   async function getPages() {
-    console.log("getPages");
     setPages(await getPagesUseCase.invoke());
   }
+  useEffect(() => {
+    getPages();
+  }, []);
   async function createPage(page: Page) {
-    console.log("createPage");
     try {
       const createdPage = await createPagesUseCase.invoke(page);
-      //setPages((prev) => [...prev, createdPage]);
-      getPages();
-      _resetValue();
+      setPages((prev) => [...prev, createdPage]);
     } catch (e) {
-      _resetValue();
       if (e instanceof Error) {
         toast(e.message);
       }
     }
   }
-
-  console.log("pages", pages);
   async function removePage(id?: string) {
     if (id) {
       const isRemoved = await removePagesUseCase.invoke(id);
@@ -61,13 +53,17 @@ export default function PageListViewModel() {
       }
     }
   }
-
-  function onChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    const { name, value } = e.target;
-    setPage((prev) => ({ ...prev, [name]: value }));
+  function onChangeValue() {
+    const page: Page = {
+      description: "",
+      title: "title",
+      color: "color",
+      form: "form",
+      icon: "icon",
+      link: "link",
+    };
+    setPage(page);
   }
-
   return {
     getPages,
     onChangeValue,
@@ -75,5 +71,6 @@ export default function PageListViewModel() {
     removePage,
     pages,
     page,
+    setPage,
   };
 }

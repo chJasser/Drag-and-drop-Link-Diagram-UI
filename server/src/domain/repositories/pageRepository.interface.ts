@@ -4,6 +4,7 @@ export interface PageRepository {
   insert(page: PageM): Promise<PageM>;
   findAll(): Promise<PageM[]>;
   findById(id: number): Promise<PageM>;
-  // updateContent(id: number, isDone: boolean): Promise<void>;
+  updateContent(page: PageM): Promise<PageM>;
+  updateLink(idPage: number, link: string): Promise<void>;
   deleteById(id: number): Promise<void>;
 }

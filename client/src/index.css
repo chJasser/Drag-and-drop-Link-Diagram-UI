@@ -61,3 +61,35 @@ body {
 .dndflow .dndnode.output {
   border-color: #ff0072;
 }
+
+.circle {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+}
+
+.rectangle {
+  width: 50px !important;
+  height: 25px !important;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+
+
+}
+
+.star {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 100px solid;
+  position: relative;
+  top: -60px;
+  left: -25px;
+  transform: rotate(180deg);
+}

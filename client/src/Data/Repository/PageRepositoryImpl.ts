@@ -20,4 +20,11 @@ export class PageRepositoryImpl implements PageRepository {
   async removePage(id: string) {
     return this.dataSource.removePage(id);
   }
+  async updatePage(page: Page, id: string) {
+    return this.dataSource.updatePage(page, id);
+  }
+
+  async updateLink(id: number, link: string) {
+    return this.dataSource.updateLink(id, link);
+  }
 }

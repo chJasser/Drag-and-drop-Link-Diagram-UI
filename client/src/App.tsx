@@ -13,7 +13,7 @@ function App() {
       <CssBaseline />
       <TopBar />
       <SideBarView />
-      <Box className="dndflow-wrapper" ml={8} mt={8}>
+      <Box className="dndflow-wrapper" ml={10} mt={8}>
         <PageListView />
       </Box>
       <ToastContainer />

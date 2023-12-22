@@ -1,43 +1,37 @@
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
+
+import { Page } from "../../../Domain/Model/Page";
+import { BASE_URL } from "../../../Data/DataSource/API/axios";
+import { Box } from "@mui/material";
 interface PageItemProps {
-  text: string;
-  index: number;
-  icon: string;
+  page: Page;
 }
-const onDragStart = (event: any, nodeType: any) => {
-  event.dataTransfer.setData("application/reactflow", nodeType);
+const onDragStart = (event: any, page: Page) => {
+  event.dataTransfer.setData("application/reactflow", JSON.stringify(page));
+
   event.dataTransfer.effectAllowed = "move";
 };
-const PageItem = ({ text, index, icon }: PageItemProps) => (
-  <ListItem
-    onDragStart={(event) => onDragStart(event, "default")}
+const PageItem = ({ page }: PageItemProps) => (
+  <Box
+    className={page.form}
+    onDragStart={(event) => onDragStart(event, page)}
     draggable
-    key={text}
-    disablePadding
-    sx={{ display: "block" }}
+    sx={{
+      backgroundColor: page.form === "triangle" ? "" : page.color,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 1,
+      margin: 1,
+      cursor: "pointer",
+      borderBottom: page.form === "triangle" ? `30px solid ${page.color}` : "",
+    }}
   >
-    <ListItemButton
-      sx={{
-        minHeight: 48,
-        justifyContent: "center",
-        px: 2.5,
-      }}
-    >
-      <ListItemIcon
-        sx={{
-          minWidth: 0,
-          mr: "auto",
-          justifyContent: "center",
-        }}
-      >
-        <img src={`${icon}`} alt="icon" />
-      </ListItemIcon>
-      <ListItemText primary={text} sx={{ opacity: 0 }} />
-    </ListItemButton>
-  </ListItem>
+    <img
+      src={BASE_URL + "/uploads/" + `${page.icon}`}
+      style={{ width: 30, height: 30 }}
+      alt={page.title}
+    />
+  </Box>
 );
 
 export default PageItem;

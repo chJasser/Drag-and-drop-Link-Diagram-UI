@@ -14,6 +14,8 @@ export class PagePresenter {
   form: string;
   @ApiProperty()
   link: string;
+  @ApiProperty()
+  description: string;
 
   constructor(page: PageM) {
     this.id = page.id;
@@ -22,5 +24,6 @@ export class PagePresenter {
     this.color = page.color;
     this.form = page.form;
     this.link = page.link;
+    this.description = page.description;
   }
 }

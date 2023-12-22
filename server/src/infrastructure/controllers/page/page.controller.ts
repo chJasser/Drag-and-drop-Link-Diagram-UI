@@ -5,10 +5,12 @@ import {
   Delete,
   Get,
   Inject,
+  Param,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,6 +28,8 @@ import { deletePageUseCases } from 'src/usecases/page/deletePage.usecases';
 import { addPageUseCases } from 'src/usecases/page/addPage.usecases';
 import { AddPageDto, UpdatePageDto } from './page.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { join } from 'path';
+import { updateLinkUsecases } from 'src/usecases/page/updateLink.usecases';
 
 @Controller('page')
 @ApiTags('page')
@@ -43,6 +47,8 @@ export class PageController {
     private readonly deletePageUsecaseProxy: UseCaseProxy<deletePageUseCases>,
     @Inject(UsecasesProxyModule.POST_PAGE_USECASES_PROXY)
     private readonly addPageUsecaseProxy: UseCaseProxy<addPageUseCases>,
+    @Inject(UsecasesProxyModule.EDIT_LINK_USECASES_PROXY)
+    private readonly updateLinkUseCaseProxy: UseCaseProxy<updateLinkUsecases>,
   ) {}
 
   @Get('page')
@@ -61,9 +67,21 @@ export class PageController {
 
   @Put('page')
   @ApiResponseType(PagePresenter, true)
-  async updatePage(@Body() updatePageDto: UpdatePageDto) {
-    const { id, title, icon, color, form, link } = updatePageDto;
-    await this.updatePageUsecaseProxy.getInstance().execute(id, title, icon, color, form, link);
+  @UseInterceptors(FileInterceptor('icon'))
+  async updatePage(@Body() updatePageDto: UpdatePageDto, @UploadedFile() icon: Express.Multer.File) {
+    const { id, title, color, form, link } = updatePageDto;
+
+    const iconFilename: string = icon !== undefined ? icon.filename : '';
+    const page = await this.updatePageUsecaseProxy
+      .getInstance()
+      .execute(Number(id), title, iconFilename, color, form, link, iconFilename);
+    return new PagePresenter(page);
+  }
+
+  @Put('link')
+  @ApiResponseType(PagePresenter, true)
+  async updateLink(@Query('id') id: number, @Query('link') link: string) {
+    await this.updateLinkUseCaseProxy.getInstance().execute(id, link);
     return 'success';
   }
 
@@ -81,8 +99,11 @@ export class PageController {
     if (!icon) {
       throw new BadRequestException('Icon is required.');
     }
-    const { title, color, form, link } = addPageDto;
-    const pageCreated = await this.addPageUsecaseProxy.getInstance().execute(title, icon.filename, color, form, link);
+    const { title, color, form, link, description } = addPageDto;
+    console.log("description",description)
+    const pageCreated = await this.addPageUsecaseProxy
+      .getInstance()
+      .execute(title, icon.filename, color, form, link, description);
     return new PagePresenter(pageCreated);
   }
 }

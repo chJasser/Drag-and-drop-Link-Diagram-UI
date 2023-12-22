@@ -2,6 +2,8 @@ import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+
+
 interface ModalComponentProps {
   handleClose: () => void;
   open: boolean;
@@ -10,11 +12,12 @@ interface ModalComponentProps {
 }
 const ModalComponent: React.FC<ModalComponentProps> = (props) => {
   const { handleClose, open, contnent: Contnent, title } = props;
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <Contnent />
+        <Contnent buttonText={title} />
       </DialogContent>
     </Dialog>
   );

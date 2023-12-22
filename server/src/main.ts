@@ -7,10 +7,11 @@ import { AllExceptionFilter } from './infrastructure/common/filter/exception.fil
 import { LoggingInterceptor } from './infrastructure/common/interceptors/logger.interceptor';
 import { ResponseFormat, ResponseInterceptor } from './infrastructure/common/interceptors/response.interceptor';
 import { LoggerService } from './infrastructure/logger/logger.service';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const env = process.env.NODE_ENV;
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.use(cookieParser());
 
@@ -41,6 +42,9 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
   }
   const port = process.env.PORT || 3000;
+  app.useStaticAssets('uploads', {
+    prefix: '/uploads', // Set a prefix for the static assets
+  });
   app.enableCors();
   await app.listen(port);
 }

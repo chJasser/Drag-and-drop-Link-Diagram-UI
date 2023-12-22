@@ -9,31 +9,45 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import useViewModel from "../PageViewModel";
+
 import { useFormik } from "formik";
 import { Page } from "../../../Domain/Model/Page";
 import * as Yup from "yup";
+import usePageModel from "../usePageModel";
+import { useAppDispatch, useAppSelector } from "../../..";
+import { addPageAsync, updatePage } from "../../slice/PageSlice";
+import { useEffect } from "react";
+
 const pageFormvalidationSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
   icon: Yup.string().required("Icon is required"),
   color: Yup.string().required("Color is required"),
   form: Yup.string().required("Form is required"),
-  link: Yup.string().required("Link is required"),
 });
-const PageForm = () => {
-  const { createPage } = useViewModel();
+interface PageFormProps {
+  buttonText: string;
+}
+
+const PageForm: React.FC<PageFormProps> = ({ buttonText }) => {
+  const dispatch = useAppDispatch();
+  const page = useAppSelector((state) => state.page.current);
+
   const pageForm = useFormik<Page>({
     initialValues: {
-      title: "",
-      icon: "",
-      color: "",
-      form: "",
-      link: "",
+      title: page ? page.title : "",
+      icon: page ? page.icon : "",
+      color: page ? page.color : "",
+      form: page ? page.form : "",
+      link: page ? page.link : "",
+      description: page ? page.description : "",
     },
     validationSchema: pageFormvalidationSchema,
     onSubmit: (values) => {
-     
-      createPage(values);
+      if (page && page.id) {
+        dispatch(updatePage(values, page.id));
+      } else {
+        dispatch(addPageAsync(values));
+      }
     },
   });
   return (
@@ -125,7 +139,6 @@ const PageForm = () => {
             <MenuItem value="circle">Circle</MenuItem>
             <MenuItem value="rect">Rectangle</MenuItem>
             <MenuItem value="triangle">Triangle</MenuItem>
-            <MenuItem value="star">Star</MenuItem>
           </Select>
           <Typography
             variant="caption"
@@ -140,13 +153,17 @@ const PageForm = () => {
         </FormControl>
         <TextField
           onChange={pageForm.handleChange}
-          label="Add Link"
+          label="Add description"
           type="text"
-          name="link"
+          name="description"
           size="small"
-          error={!!pageForm.touched.link && !!pageForm.errors.link}
-          helperText={pageForm.touched.link && pageForm.errors.link}
-          value={pageForm.values.link}
+          error={
+            !!pageForm.touched.description && !!pageForm.errors.description
+          }
+          helperText={
+            pageForm.touched.description && pageForm.errors.description
+          }
+          value={pageForm.values.description}
           sx={{ gridColumn: "span 2" }}
         />
         <Input onChange={pageForm.handleChange} type="color" name="color" />
@@ -154,7 +171,7 @@ const PageForm = () => {
           {pageForm.touched.color && pageForm.errors.color}
         </Typography>
         <Button sx={{ gridColumn: "span 4" }} variant="contained" type="submit">
-          Add or update
+          {buttonText}
         </Button>
       </Box>
     </form>

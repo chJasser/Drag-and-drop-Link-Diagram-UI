@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Page {
@@ -17,6 +17,9 @@ export class Page {
   @Column('varchar', { nullable: false })
   form: string;
 
-  @Column('varchar', { nullable: false })
-  link: string;
+  @Column('varchar', { nullable: true })
+  link: string | null;
+
+  @Column('varchar', { nullable: true })
+  description: string;
 }

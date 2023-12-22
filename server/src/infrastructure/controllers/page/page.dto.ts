@@ -1,19 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class UpdatePageDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
-  @IsNumber()
-  readonly id: number;
+  readonly id: string;
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
   readonly title: string;
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
-  @IsString()
-  readonly icon: string;
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
@@ -22,12 +17,10 @@ export class UpdatePageDto {
   @IsNotEmpty()
   @IsString()
   readonly form: string;
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsString()
   readonly link: string;
 }
-
 
 export class AddPageDto {
   @ApiProperty({ required: true })
@@ -37,17 +30,15 @@ export class AddPageDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
-  // readonly icon: string;
-  // @ApiProperty({ required: true })
-  // @IsNotEmpty()
-  // @IsString()
   readonly color: string;
   @ApiProperty({ required: true })
   @IsNotEmpty()
   @IsString()
   readonly form: string;
   @ApiProperty({ required: true })
-  @IsNotEmpty()
   @IsString()
   readonly link: string;
+  @ApiProperty({ required: false })
+  @IsString()
+  readonly description: string;
 }
